@@ -4,9 +4,10 @@ import axiosInstance from '../../api/axiosInstance'
 // CREATE TODO
 export const createTodo = createAsyncThunk(
   'todo/createTodo',
-  async ({ title, description, createdBy }, thunkApi) => {
+  async ({ title, description,category,dueDate,createdBy }, thunkApi) => {
     try {
-      const res = await axiosInstance.post('/todo/create', { title, description, createdBy })
+      const res = await axiosInstance.post('/todo/create', { title, description, category, dueDate, createdBy })
+      console.log("create res", res)
       return res.data
     } catch (error) {
       const message =
@@ -125,7 +126,11 @@ const todoSlice = createSlice({
       .addCase(deleteTodo.fulfilled, (state, action) => {
         state.loading = false
         state.success = true
-        state.todos = state.todos.filter((item)=> item.data?._id!=action.payload)
+        state.todos = state.todos.filter((item)=> {
+          
+          console.log("delte item ", item)
+        return   item?._id!=action.payload
+        })
       })
       .addCase(deleteTodo.rejected, (state, action) => {
         state.loading = false

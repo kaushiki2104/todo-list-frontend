@@ -1,32 +1,33 @@
-import { View, Text, TextInput, StyleSheet } from 'react-native';
-import React from 'react';
+import { View, TextInput, StyleSheet } from "react-native";
 
-const SearchInput = ({ setSearchText, searchText }) => {
-    return (
-        <View style={styles.container}>
-            <TextInput placeholder='Search your todo'
-                value={searchText}
-                onChangeText={text => setSearchText(text)}
-                style={styles.input}
-            />
-        </View>
-    );
+
+const SearchInput = ({ setSearchtext, searchtext }) => {
+  return (
+    <View style={styles.container}>
+      <TextInput
+        style={styles.input}
+        placeholder="Search your todo "
+        value={searchtext}
+        onChangeText={(text) => setSearchtext(text)}
+      />
+    </View>
+  );
 };
 
-
 const styles = StyleSheet.create({
-    container: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 20,
-    },
-    input: {
-        borderWidth: 1,
-        width: '90%',
-        backgroundColor: '#fff9e5fd',
-        paddingLeft: 20,
-        borderRadius: 10,
-    }
-
+  container: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  input: {
+    borderWidth: 1,
+    marginTop: 20,
+    width: "90%",
+    borderRadius: 10,
+    backgroundColor: "#f9fad2ff",
+    paddingLeft: 20,
+    marginBottom: 10,
+  },
 });
+
 export default SearchInput;

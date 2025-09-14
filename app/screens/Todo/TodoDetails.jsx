@@ -13,7 +13,8 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteTodo, updateTodo } from "../../redux/features/todoSlice";
 import DropDownPicker from 'react-native-dropdown-picker';
-
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { Button } from 'react-native';
 
 const TodoDetails = () => {
   const route = useRoute();
@@ -24,7 +25,7 @@ const TodoDetails = () => {
   const [todoDesc, setTodoDesc] = useState(item?.description);
 
   const dispatch = useDispatch();
-  const { todo, success, error } = useSelector((state) => state.todo);
+  const { todo, success} = useSelector((state) => state.todo);
 
 const [open, setOpen] = useState(false);
   const [value, setValue] = useState(item.isCompleted);
@@ -32,6 +33,24 @@ const [open, setOpen] = useState(false);
     {label: 'Compleated', value: true},
     {label: 'Incomplete', value: false}
   ]);
+
+  const [openCaterogy, setOpenCategory] = useState(false);
+    const [catgoryValue, setCategoryValue] = useState(item.category);
+    const [categoryItems, setCategoryItems] = useState([
+         {label: 'High', value: 'High'},
+    {label: 'Medium', value: 'Medium'},
+    {label: 'Low', value: 'Low'},
+     
+    ]);
+
+const [dueDate, setDueDate] = useState(new Date(item.dueDate));
+ const [showDatePicker, setShowDatePicker] = useState(false);
+
+  const handleDateChange = (event, selectedDate) => {
+    setShowDatePicker(false);
+    console.log('selected date ', selectedDate)
+    if (selectedDate) setDueDate(selectedDate);
+  };
 
 
 
@@ -43,7 +62,9 @@ const [open, setOpen] = useState(false);
       ...todo,
       title: todoTitle,
       description: todoDesc,
-      isCompleted: value
+      isCompleted: value,
+      category:catgoryValue,
+      dueDate:dueDate
     };
     try {
       dispatch(updateTodo({ id, updatedTodo })).unwrap();
@@ -105,24 +126,46 @@ const [open, setOpen] = useState(false);
         onChangeText={(text) => setTodoDesc(text)}
       />
 
-      <TextInput
-        value={`Date : ${item.createdAt.substring(0, 10)}`}
+     
+    
+
+      {!isEdit ? (
+        <> 
+          <TextInput
+        value={` Creted Date : ${item.createdAt.substring(0, 10)} - Due Date : ${item.dueDate.substring(0, 10)}`}
         editable={false}
         style={styles.date}
       />
-
       <Text style={styles.status}>
         {" "}
         Status : {item?.isCompleted ? "Completed" : "Incompleate"}
       </Text>
-
-      {!isEdit ? (
+      <Text style={styles.status}>
+        {" "}
+        Category : {item?.category}
+      </Text>
         <TouchableOpacity onPress={() => setIsEdit(true)} style={styles.btn}>
           <Text style={styles.btntext}>Edit Todo </Text>
         </TouchableOpacity>
+        </>
       ) : (
   <> 
- 
+
+    <View style={{ marginVertical: 10 }}>
+        <Button
+          title={`Select Due Date: ${dueDate.toLocaleDateString()}`}
+          onPress={() => setShowDatePicker(true)}
+        />
+        {showDatePicker && (
+          <DateTimePicker
+            value={dueDate}
+            mode="date"
+            display="default"
+            onChange={handleDateChange}
+          />
+        )}
+      </View>
+
  <DropDownPicker
       open={open}
       value={value}
@@ -133,7 +176,16 @@ const [open, setOpen] = useState(false);
       placeholder="Select One"
       style={styles.dropdown}
     />
-
+  <DropDownPicker
+      open={openCaterogy}
+      value={catgoryValue}
+      items={categoryItems}
+      setOpen={setOpenCategory}
+      setValue={setCategoryValue}
+      setItems={setCategoryItems}
+      placeholder="Select One"
+      style={styles.dropdown}
+    />
         <View style={styles.btnContainer}>
           <TouchableOpacity
             onPress={() => handleUpdate(item._id)}
@@ -227,6 +279,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginLeft: 25,
     marginVertical: 20,
+   zIndex:1055
   },
 });
 

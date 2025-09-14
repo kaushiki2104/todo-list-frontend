@@ -21,14 +21,17 @@ export const login = createAsyncThunk(
   'auth/login',
   async ({ email, password }, thunkApi) => {
     try {
+      console.log('login request', email, password)
+      console.log("Calling URL:", axiosInstance.defaults.baseURL + "/user/login");
       const res = await axiosInstance.post('/user/login', { email, password })
       const { user, token } = res.data
+      console.log("return ", res.data);
 
       // Save both user & token in AsyncStorage
       await AsyncStorage.setItem('token', token)
       await AsyncStorage.setItem('user', JSON.stringify(user))
       await AsyncStorage.setItem('userId', user?.id)
-
+       
       return { user, token }
     } catch (error) {
       const message = error.response?.data?.message || error.message || 'Login failed'
